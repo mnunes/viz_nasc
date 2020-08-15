@@ -36,7 +36,7 @@ malha <- malha %>%
 # retirar dias que nao existem
 
 malha <- malha %>%
-	#filter(!(x == "Fevereiro" & y >= 29)) %>%
+	filter(!(x == "Fevereiro" & y > 29)) %>%
 	filter(!(x %in% c("Abril", "Junho", "Setembro", "Novembro") & y > 30)) %>%
 	mutate(x = factor(x, levels = c("Janeiro", "Fevereiro", "Março",
 																	"Abril", "Maio", "Junho",
@@ -45,12 +45,20 @@ malha <- malha %>%
 
 # colocar as porcentagens dos nascimentos
 
-#malha <- data.frame(malha, prop = datas_tabela_proporcao[-338])
 malha <- data.frame(malha, prop = datas_tabela_proporcao)
 
+# compensacao de 29 de fevereiro
+
+malha[338, 3] <- malha[338, 3]*(6/23)
+
+# grafico
+
 ggplot(malha, aes(x = y, y = fct_rev(x), fill = prop)) + 
-	geom_tile(colour = "white") +
-	scale_fill_viridis() +
+	geom_tile(colour = "grey10") +
+	scale_fill_gradient2(low = viridis(2)[1], 
+											 high = viridis(2)[2], 
+											 mid = "white",
+											 midpoint = 0) +
 	scale_x_continuous(breaks = 1:31) +
 	coord_equal() +
 	theme_minimal() +
@@ -58,7 +66,7 @@ ggplot(malha, aes(x = y, y = fct_rev(x), fill = prop)) +
 				panel.grid.minor = element_blank()) + 
 	labs(x = "", 
 			 y = "", 
-			 fill = "Comparação\ncom a Média", 
+			 fill = "Diferença Percentual\nem Relação à Média", 
 			 title = "As datas de aniversário mais comuns no Brasil: 1996-2018",
 			 caption = "https://marcusnunes.me")
 
