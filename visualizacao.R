@@ -70,3 +70,17 @@ ggplot(malha, aes(x = y, y = fct_rev(x), fill = prop)) +
 			 title = "As datas de aniversário mais comuns no Brasil: 1996-2018",
 			 caption = "https://marcusnunes.me")
 
+# dias menos comuns
+
+malha %>%
+	arrange(prop) %>%
+	head(10) %>%
+	mutate(prop = round(prop, 2))
+
+# dias mais comuns
+
+malha %>%
+	arrange(desc(prop)) %>%
+	head(10) %>%
+	mutate(prop = round(prop, 2))
+
